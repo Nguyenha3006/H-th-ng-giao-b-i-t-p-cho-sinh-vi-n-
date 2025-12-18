@@ -1,0 +1,28 @@
+#ifndef DATATYPE_H
+#define DATATYPE_H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Định nghĩa ngày tháng (dùng cho Deadline)
+typedef struct {
+    int day, month, year;
+} Date;
+
+// Cấu trúc Bài Tập
+typedef struct {
+    char id[20];        // Mã bài
+    char title[100];    // Tên bài
+    float points;       // Điểm số
+    Date deadline;      // Hạn nộp
+} BaiTap;
+
+// Cấu trúc Node cho Danh sách liên kết (SV2 sẽ dùng)
+struct Node {
+    BaiTap data;
+    struct Node* next;
+};
+typedef struct Node Node;
+
+#endif

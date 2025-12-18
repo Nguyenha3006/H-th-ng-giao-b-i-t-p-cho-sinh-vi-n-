@@ -1,0 +1,140 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include "datatype.h" // Gọi file struct chung vào
+
+// --- PHẦN KHAI BÁO HÀM (PROTOTYPE) ---
+
+// Hàm hỗ trợ của SV1/SV4 (Tạo dữ liệu giả để test)
+void taoDuLieuMau(Node** head); 
+void themVaoDau(Node** head, BaiTap bt); // Hàm phụ trợ tạm thời
+
+// Hàm của SV2 (Để trống chờ ghép)
+void hienThiDS(Node* head);
+
+// Hàm của SV4 (BẠN LÀM)
+void sapXepTheoDiem(Node* head);
+void swapData(BaiTap *a, BaiTap *b);
+void ghiFile(Node* head);
+void docFile(Node** head);
+
+// --- MENU CHÍNH (SV1) ---
+int main() {
+    Node* head = NULL;
+    int choice;
+
+    // Tự động nạp dữ liệu giả để test ngay (Quyền lợi của SV4)
+    taoDuLieuMau(&head); 
+
+    do {
+        printf("\n=== QUAN LY BAI TAP (SV1 & SV4) ===\n");
+        printf("1. Hien thi danh sach (Gia lap SV2)\n");
+        printf("2. Sap xep theo Diem giam dan (SV4)\n");
+        printf("3. Luu ra file 'baitap.txt' (SV4)\n");
+        printf("4. Doc tu file 'baitap.txt' (SV4)\n");
+        printf("0. Thoat\n");
+        printf("Nhap lua chon: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                hienThiDS(head);
+                break;
+            case 2:
+                sapXepTheoDiem(head);
+                printf(">> Da sap xep xong! Hay chon so 1 de xem lai.\n");
+                break;
+            case 3:
+                ghiFile(head);
+                break;
+            case 4:
+                docFile(&head);
+                break;
+            case 0:
+                printf("Ket thuc chuong trinh.\n");
+                break;
+            default:
+                printf("Lua chon sai!\n");
+        }
+    } while(choice != 0);
+
+    return 0;
+}
+
+// --- PHẦN CÀI ĐẶT CHI TIẾT ---
+
+// 1. Hàm tạo dữ liệu giả (Giúp bạn test Code Sắp Xếp mà không cần chờ SV2)
+void themVaoDau(Node** head, BaiTap bt) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = bt;
+    newNode->next = *head;
+    *head = newNode;
+}
+
+void taoDuLieuMau(Node** head) {
+    // Tạo 3 bài tập mẫu
+    BaiTap b1 = {"BT01", "C++ Co ban", 8.5, {10, 10, 2025}};
+    BaiTap b2 = {"BT02", "Cau truc du lieu", 9.0, {15, 10, 2025}};
+    BaiTap b3 = {"BT03", "Giai thuat", 7.0, {12, 10, 2025}};
+    
+    themVaoDau(head, b1);
+    themVaoDau(head, b2);
+    themVaoDau(head, b3);
+    printf(">> (DEBUG) Da tao san 3 bai tap de test.\n");
+}
+
+// 2. Hàm Hiển thị (Mượn tạm logic SV2 để test)
+void hienThiDS(Node* head) {
+    printf("\n%-10s %-20s %-10s\n", "MA", "TEN BAI", "DIEM");
+    Node* p = head;
+    while(p != NULL) {
+        printf("%-10s %-20s %-5.2f\n", p->data.id, p->data.title, p->data.points);
+        p = p->next;
+    }
+}
+
+// 3. Hàm Sắp xếp (Nhiệm vụ SV4) - Selection Sort
+void swapData(BaiTap *a, BaiTap *b) {
+    BaiTap temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sapXepTheoDiem(Node* head) {
+    for(Node* i = head; i != NULL; i = i->next) {
+        for(Node* j = i->next; j != NULL; j = j->next) {
+            // Sắp xếp giảm dần (Điểm cao lên đầu)
+            if(i->data.points < j->data.points) {
+                swapData(&i->data, &j->data);
+            }
+        }
+    }
+}
+
+// 4. Hàm Ghi File (Nhiệm vụ SV4)
+void ghiFile(Node* head) {
+    FILE* f = fopen("baitap.txt", "w");
+    if(f == NULL) {
+        printf("Loi mo file!\n");
+        return;
+    }
+    Node* p = head;
+    // Ghi tiêu đề (tùy chọn)
+    fprintf(f, "%d\n", 3); // Giả sử ghi số lượng
+    while(p != NULL) {
+        fprintf(f, "%s;%s;%.2f\n", p->data.id, p->data.title, p->data.points);
+        p = p->next;
+    }
+    fclose(f);
+    printf(">> Da luu file 'baitap.txt' thanh cong!\n");
+}
+
+// 5. Hàm Đọc File (Nhiệm vụ SV4) - Demo mở file
+void docFile(Node** head) {
+    FILE* f = fopen("baitap.txt", "r");
+    if(f == NULL) {
+        printf("Chua co file du lieu. Hay chon Luu file truoc!\n");
+        return;
+    }
+    printf(">> Mo file thanh cong (Chuc nang doc chi tiet se hoan thien tuan 2)\n");
+    fclose(f);
+}
