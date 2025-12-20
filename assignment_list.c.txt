@@ -1,0 +1,73 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+/* ===== Struct Assignment (giả định đơn giản để test) ===== */
+typedef struct {
+    int id;
+    char title[100];
+} Assignment;
+
+/* ===== Struct Node ===== */
+typedef struct AssNode {
+    Assignment data;
+    struct AssNode *next;
+} AssNode;
+
+/* ===== 1. Tạo node mới ===== */
+AssNode* createAssNode(Assignment ass) {
+    AssNode *node = (AssNode*)malloc(sizeof(AssNode));
+    if (node == NULL) {
+        printf("Khong cap phat duoc bo nho!\n");
+        return NULL;
+    }
+    node->data = ass;
+    node->next = NULL;
+    return node;
+}
+
+/* ===== 2. Thêm bài tập vào cuối danh sách ===== */
+void addAssignment(AssNode **head, Assignment ass) {
+    AssNode *newNode = createAssNode(ass);
+    if (*head == NULL) {
+        *head = newNode;
+        return;
+    }
+    AssNode *temp = *head;
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+    temp->next = newNode;
+}
+
+/* ===== 3. In danh sách bài tập ===== */
+void printAssignments(AssNode *head) {
+    AssNode *temp = head;
+    while (temp != NULL) {
+        printf("ID: %d | Tieu de: %s\n", temp->data.id, temp->data.title);
+        temp = temp->next;
+    }
+}
+
+/* ===== 4. Hàm sort (chưa làm, để trống theo yêu cầu) ===== */
+void sortAssignments(AssNode *head) {
+    // Tuần sau SV4 xử lý
+}
+
+/* ===== MAIN để test chạy được ===== */
+int main() {
+    AssNode *assignment_list = NULL;
+
+    Assignment a1 = {1, "Bai tap C co ban"};
+    Assignment a2 = {2, "Linked List"};
+    Assignment a3 = {3, "Struct & Pointer"};
+
+    addAssignment(&assignment_list, a1);
+    addAssignment(&assignment_list, a2);
+    addAssignment(&assignment_list, a3);
+
+    printf("Danh sach bai tap:\n");
+    printAssignments(assignment_list);
+
+    return 0;
+}
